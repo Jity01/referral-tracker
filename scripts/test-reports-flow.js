@@ -26,7 +26,7 @@ import { getClient } from "../lib/store.js";
 import { buildClientReport } from "../lib/domain.js";
 import { analyzeBothSimulatedCases } from "../lib/email-report-analyzer.js";
 
-async function main() {
+function main() {
   console.log("Testing reports flow...\n");
 
   const case1 = getClient("case-1");
@@ -42,7 +42,7 @@ async function main() {
   const report2 = buildClientReport(case2);
   console.log("✓ buildClientReport OK");
 
-  const emailAnalysis = await analyzeBothSimulatedCases();
+  const emailAnalysis = analyzeBothSimulatedCases();
   console.log("✓ analyzeBothSimulatedCases OK");
 
   if (!emailAnalysis.case1 || !emailAnalysis.case2) {
@@ -62,7 +62,9 @@ async function main() {
   console.log("\nAll checks passed.");
 }
 
-main().catch((err) => {
+try {
+  main();
+} catch (err) {
   console.error("FAILED:", err);
   process.exit(1);
-});
+}

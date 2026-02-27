@@ -36,7 +36,7 @@ export default async function ClientPage({ params }) {
 
   const case1 = getClient("case-1");
   const case2 = getClient("case-2");
-  const emailAnalysis = (case1 || case2) ? await analyzeBothSimulatedCases() : null;
+  const emailAnalysis = (case1 || case2) ? analyzeBothSimulatedCases() : null;
   const simulatedCaseReports = [];
   if (case1) simulatedCaseReports.push({ client: case1, report: buildClientReport(case1), label: "Case 1 (auto collision)", emailAnalysis: emailAnalysis?.case1 });
   if (case2) simulatedCaseReports.push({ client: case2, report: buildClientReport(case2), label: "Case 2 (premises injury)", emailAnalysis: emailAnalysis?.case2 });
