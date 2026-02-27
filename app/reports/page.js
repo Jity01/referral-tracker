@@ -80,25 +80,112 @@ function ReportCard({ caseLabel, client, report, variant, emailAnalysis }) {
       ) : null}
 
       {emailAnalysis ? (
-        <div style={{ marginTop: 24, padding: 20, borderRadius: 14, background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.08)" }}>
-          <h3 style={{ marginTop: 0 }}>Email thread analysis</h3>
-          <p className="small muted" style={{ marginBottom: 12 }}>Inferred from correspondence (LLM or rule-based).</p>
-          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
-            {emailAnalysis.responsiveness && <span title={emailAnalysis.responsiveness.reasoning} style={{ padding: "6px 10px", borderRadius: 8, background: "rgba(0,0,0,0.06)", fontSize: 12 }}>Responsiveness: {emailAnalysis.responsiveness.score}</span>}
-            {emailAnalysis.communicationQuality && <span title={emailAnalysis.communicationQuality.reasoning} style={{ padding: "6px 10px", borderRadius: 8, background: "rgba(0,0,0,0.06)", fontSize: 12 }}>Communication: {emailAnalysis.communicationQuality.score}</span>}
-            {emailAnalysis.clientSatisfaction && <span title={emailAnalysis.clientSatisfaction.reasoning} style={{ padding: "6px 10px", borderRadius: 8, background: "rgba(0,0,0,0.06)", fontSize: 12 }}>Satisfaction: {emailAnalysis.clientSatisfaction.score}</span>}
+        <div style={{ marginTop: 24, padding: 24, borderRadius: 14, background: "rgba(0,0,0,0.03)", border: "1px solid rgba(0,0,0,0.08)" }}>
+          <h3 style={{ marginTop: 0, marginBottom: 12 }}>Email thread analysis</h3>
+          <p className="small muted" style={{ marginBottom: 20 }}>Inferred from correspondence (LLM or rule-based).</p>
+
+          {emailAnalysis.executiveSummary ? (
+            <div style={{ marginBottom: 20, padding: 16, borderRadius: 10, background: "rgba(0,0,0,0.04)", borderLeft: "4px solid #555" }}>
+              <strong className="small" style={{ display: "block", marginBottom: 8 }}>Executive summary</strong>
+              <p className="small" style={{ margin: 0 }}>
+                {emailAnalysis.executiveSummary}
+              </p>
+            </div>
+          ) : null}
+
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 20 }}>
+            {emailAnalysis.responsiveness && <span style={{ padding: "6px 12px", borderRadius: 8, background: "rgba(0,0,0,0.06)", fontSize: 12 }}>Responsiveness: {emailAnalysis.responsiveness.score}</span>}
+            {emailAnalysis.communicationQuality && <span style={{ padding: "6px 12px", borderRadius: 8, background: "rgba(0,0,0,0.06)", fontSize: 12 }}>Communication: {emailAnalysis.communicationQuality.score}</span>}
+            {emailAnalysis.clientSatisfaction && <span style={{ padding: "6px 12px", borderRadius: 8, background: "rgba(0,0,0,0.06)", fontSize: 12 }}>Satisfaction: {emailAnalysis.clientSatisfaction.score}</span>}
+            {emailAnalysis.clientKeptInformed && <span style={{ padding: "6px 12px", borderRadius: 8, background: "rgba(0,0,0,0.06)", fontSize: 12 }}>Client informed: {emailAnalysis.clientKeptInformed.score}</span>}
           </div>
-          {emailAnalysis.outcome?.summary ? <p className="small" style={{ margin: "0 0 8px" }}><strong>Outcome:</strong> {emailAnalysis.outcome.summary}</p> : null}
-          {emailAnalysis.matterProgression ? <p className="small muted" style={{ margin: "0 0 8px" }}><strong>Progression:</strong> {emailAnalysis.matterProgression}</p> : null}
-          {emailAnalysis.redFlags?.length > 0 ? (
-            <div style={{ marginTop: 12 }}>
-              <strong className="small" style={{ color: "#a33b3b" }}>Red flags:</strong>
-              <ul className="list-reset small" style={{ margin: "4px 0 0", color: "#a33b3b" }}>
-                {emailAnalysis.redFlags.map((flag, i) => <li key={i}>{flag}</li>)}
+
+          <div style={{ display: "grid", gap: 16, gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))" }}>
+            {emailAnalysis.responsiveness?.reasoning ? (
+              <div>
+                <strong className="small" style={{ display: "block", marginBottom: 4 }}>Responsiveness</strong>
+                <p className="small muted" style={{ margin: 0 }}>{emailAnalysis.responsiveness.reasoning}</p>
+              </div>
+            ) : null}
+            {emailAnalysis.communicationQuality?.reasoning ? (
+              <div>
+                <strong className="small" style={{ display: "block", marginBottom: 4 }}>Communication quality</strong>
+                <p className="small muted" style={{ margin: 0 }}>{emailAnalysis.communicationQuality.reasoning}</p>
+              </div>
+            ) : null}
+            {emailAnalysis.clientSatisfaction?.reasoning ? (
+              <div>
+                <strong className="small" style={{ display: "block", marginBottom: 4 }}>Client satisfaction</strong>
+                <p className="small muted" style={{ margin: 0 }}>{emailAnalysis.clientSatisfaction.reasoning}</p>
+              </div>
+            ) : null}
+            {emailAnalysis.clientKeptInformed?.reasoning ? (
+              <div>
+                <strong className="small" style={{ display: "block", marginBottom: 4 }}>Client kept informed</strong>
+                <p className="small muted" style={{ margin: 0 }}>{emailAnalysis.clientKeptInformed.reasoning}</p>
+              </div>
+            ) : null}
+          </div>
+
+          {emailAnalysis.sentimentProgression ? (
+            <div style={{ marginTop: 20 }}>
+              <strong className="small" style={{ display: "block", marginBottom: 6 }}>Sentiment progression</strong>
+              <p className="small muted" style={{ margin: 0 }}>{emailAnalysis.sentimentProgression}</p>
+            </div>
+          ) : null}
+
+          {emailAnalysis.keyQuotes?.length > 0 ? (
+            <div style={{ marginTop: 20 }}>
+              <strong className="small" style={{ display: "block", marginBottom: 8 }}>Key client quotes</strong>
+              <ul className="list-reset small" style={{ margin: 0, paddingLeft: 20 }}>
+                {emailAnalysis.keyQuotes.map((q, i) => (
+                  <li key={i} style={{ marginBottom: 6, fontStyle: "italic" }}>{q}</li>
+                ))}
               </ul>
             </div>
           ) : null}
-          {emailAnalysis.feeDiscussion ? <p className="small muted" style={{ marginTop: 12, marginBottom: 0 }}><strong>Fee discussion:</strong> {emailAnalysis.feeDiscussion}</p> : null}
+
+          {emailAnalysis.milestones?.length > 0 ? (
+            <div style={{ marginTop: 20 }}>
+              <strong className="small" style={{ display: "block", marginBottom: 8 }}>Milestones</strong>
+              <ul className="list-reset small" style={{ margin: 0, paddingLeft: 20 }}>
+                {emailAnalysis.milestones.map((m, i) => (
+                  <li key={i} style={{ marginBottom: 4 }}>{m}</li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+
+          {emailAnalysis.outcome?.summary ? (
+            <div style={{ marginTop: 20 }}>
+              <strong className="small" style={{ display: "block", marginBottom: 4 }}>Outcome</strong>
+              <p className="small" style={{ margin: 0 }}>{emailAnalysis.outcome.summary}</p>
+              {emailAnalysis.outcome.reasoning ? <p className="small muted" style={{ marginTop: 4 }}>{emailAnalysis.outcome.reasoning}</p> : null}
+            </div>
+          ) : null}
+
+          {emailAnalysis.matterProgression ? (
+            <div style={{ marginTop: 16 }}>
+              <strong className="small" style={{ display: "block", marginBottom: 4 }}>Matter progression</strong>
+              <p className="small muted" style={{ margin: 0 }}>{emailAnalysis.matterProgression}</p>
+            </div>
+          ) : null}
+
+          {emailAnalysis.redFlags?.length > 0 ? (
+            <div style={{ marginTop: 20, padding: 20, borderRadius: 10, background: "rgba(163,59,59,0.08)", border: "1px solid rgba(163,59,59,0.2)" }}>
+              <strong className="small" style={{ color: "#a33b3b", display: "block", marginBottom: 8 }}>Red flags</strong>
+              <ul className="list-reset small" style={{ margin: 0, color: "#a33b3b" }}>
+                {emailAnalysis.redFlags.map((flag, i) => <li key={i} style={{ marginBottom: 4 }}>{flag}</li>)}
+              </ul>
+            </div>
+          ) : null}
+
+          {emailAnalysis.feeDiscussion ? (
+            <div style={{ marginTop: 20 }}>
+              <strong className="small" style={{ display: "block", marginBottom: 4 }}>Fee discussion</strong>
+              <p className="small muted" style={{ margin: 0 }}>{emailAnalysis.feeDiscussion}</p>
+            </div>
+          ) : null}
         </div>
       ) : null}
 

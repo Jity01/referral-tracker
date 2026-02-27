@@ -27,11 +27,11 @@ export default function ClientExperience({ client, report, digest, feedback, aut
   const [recommendation, setRecommendation] = useState(report.recommendation);
 
   const selfHelpItems = useMemo(
-    () => digest.items.filter((item) => item.startsWith("Self-help:")).map((item) => item.replace("Self-help: ", "")),
-    [digest.items]
+    () => (digest?.items ?? []).filter((item) => item.startsWith("Self-help:")).map((item) => item.replace("Self-help: ", "")),
+    [digest?.items]
   );
 
-  const selfHelpMaterials = digest.selfHelpMaterials ?? null;
+  const selfHelpMaterials = digest?.selfHelpMaterials ?? null;
 
   async function submitFeedback(event) {
     event.preventDefault();
@@ -242,7 +242,7 @@ export default function ClientExperience({ client, report, digest, feedback, aut
                     {entry.message} ({entry.severity})
                   </li>
                 ))}
-                {feedback.length === 0 ? <li>No concerns reported yet.</li> : null}
+                {(feedback ?? []).length === 0 ? <li>No concerns reported yet.</li> : null}
               </ul>
             </article>
           </section>
@@ -294,14 +294,18 @@ export default function ClientExperience({ client, report, digest, feedback, aut
                         {ea ? (
                           <div style={{ marginTop: 20, paddingTop: 20, borderTop: "1px solid rgba(0,0,0,0.08)" }}>
                             <h5 style={{ margin: "0 0 12px", fontSize: 13 }}>Email thread analysis</h5>
-                            <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 12 }}>
-                              {ea.responsiveness && <span title={ea.responsiveness.reasoning} style={{ padding: "4px 8px", borderRadius: 6, background: "rgba(0,0,0,0.06)", fontSize: 12 }}>Responsiveness: {ea.responsiveness.score}</span>}
-                              {ea.communicationQuality && <span title={ea.communicationQuality.reasoning} style={{ padding: "4px 8px", borderRadius: 6, background: "rgba(0,0,0,0.06)", fontSize: 12 }}>Communication: {ea.communicationQuality.score}</span>}
-                              {ea.clientSatisfaction && <span title={ea.clientSatisfaction.reasoning} style={{ padding: "4px 8px", borderRadius: 6, background: "rgba(0,0,0,0.06)", fontSize: 12 }}>Satisfaction: {ea.clientSatisfaction.score}</span>}
+                            {ea.executiveSummary ? <p className="small muted" style={{ margin: "0 0 12px" }}>{ea.executiveSummary}</p> : null}
+                            <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
+                              {ea.responsiveness && <span style={{ padding: "4px 8px", borderRadius: 6, background: "rgba(0,0,0,0.06)", fontSize: 11 }}>Responsiveness: {ea.responsiveness.score}</span>}
+                              {ea.communicationQuality && <span style={{ padding: "4px 8px", borderRadius: 6, background: "rgba(0,0,0,0.06)", fontSize: 11 }}>Communication: {ea.communicationQuality.score}</span>}
+                              {ea.clientSatisfaction && <span style={{ padding: "4px 8px", borderRadius: 6, background: "rgba(0,0,0,0.06)", fontSize: 11 }}>Satisfaction: {ea.clientSatisfaction.score}</span>}
+                              {ea.clientKeptInformed?.score != null ? <span style={{ padding: "4px 8px", borderRadius: 6, background: "rgba(0,0,0,0.06)", fontSize: 11 }}>Informed: {ea.clientKeptInformed.score}</span> : null}
                             </div>
+                            {ea.sentimentProgression ? <p className="small muted" style={{ margin: "0 0 8px", fontSize: 11 }}>{ea.sentimentProgression}</p> : null}
                             {ea.outcome?.summary ? <p className="small muted" style={{ margin: "0 0 8px" }}><strong>Outcome:</strong> {ea.outcome.summary}</p> : null}
+                            {ea.keyQuotes?.length > 0 ? <p className="small muted" style={{ margin: "0 0 8px", fontStyle: "italic" }}>"{ea.keyQuotes[0]}"</p> : null}
                             {ea.redFlags?.length > 0 ? (
-                              <ul className="list-reset small" style={{ margin: 0, color: "#a33b3b" }}>
+                              <ul className="list-reset small" style={{ margin: 0, color: "#a33b3b", fontSize: 11 }}>
                                 {ea.redFlags.map((flag, i) => <li key={i}>{flag}</li>)}
                               </ul>
                             ) : null}
